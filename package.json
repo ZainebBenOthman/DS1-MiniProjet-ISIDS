@@ -1,0 +1,32 @@
+{
+  "name": "ds1-miniprojet-isids",
+  "version": "1.0.0",
+  "description": "API REST Express.js MongoDB\r ## Membres de l'équipe\r - Étudiante 1 : [Zaineb ben othman]\r - Étudiante 2 : [Dorra Ennaifer]",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZainebBenOthman/DS1-MiniProjet-ISIDS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ZainebBenOthman/DS1-MiniProjet-ISIDS/issues"
+  },
+  "homepage": "https://github.com/ZainebBenOthman/DS1-MiniProjet-ISIDS#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
