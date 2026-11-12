@@ -232,10 +232,74 @@ const deleteTask = async (req, res) => {
   }
 };
 
+const User = require('../models/User');
+
+// Fonction bech el manager yaffecti tache l utilisateur
+const assignTask = async (req, res) => {
+  try {
+    // Nverifiw eli utilisateur manager
+    if (req.user.role !== 'manager') {
+      return res.status(403).json({
+        message: 'Seul le manager peut affecter une tache'
+      });
+    }
+
+    // Net2akdou eli ID tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nekhdhou ID utilisateur mel body
+    const { assignedTo } = req.body;
+
+    // Net2akdou eli ID utilisateur s7i7
+    if (!mongoose.isValidObjectId(assignedTo)) {
+      return res.status(400).json({
+        message: 'ID utilisateur invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nlawjou al utilisateur eli bech naffectiwlou tache
+    const user = await User.findById(assignedTo);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Utilisateur introuvable'
+      });
+    }
+
+    // Nsajlou utilisateur eli affecteh el manager
+    task.assignedTo = user._id;
+    await task.save();
+
+    return res.status(200).json({
+      message: 'Tache affectee avec succes',
+      task
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
+
 module.exports = {
   createTask,
   getTasks,
   getTaskById,
   updateTask,
-  deleteTask
+  deleteTask,
+  assignTask
 };

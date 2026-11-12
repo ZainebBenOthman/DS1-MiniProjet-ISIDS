@@ -26,4 +26,8 @@ router.put('/:id', taskController.updateTask);
 
 // Route bech nfasskhou tache
 router.delete('/:id', taskController.deleteTask);
+
+// Ken el manager ynajem yaffecti tache l utilisateur
+router.patch('/:id/assign', taskController.assignTask);
+
 module.exports = router;
