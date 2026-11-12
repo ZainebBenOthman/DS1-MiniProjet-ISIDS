@@ -8,12 +8,17 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 // Njibou middleware bech nverifiw JWT.
 
+const roleMiddleware = require('../middlewares/roleMiddleware');
+// Njibou middleware eli yverifi role utilisateur.
+
 const {
   createProject,
   getMyProjects,
   getProjectById, 
   updateProject,
-  deleteProject
+  deleteProject,
+  searchProjects,
+  getAllProjects
 } = require('../controllers/projectController');
 // Njibou fonction createProject ou getMyProjects mel controller bech nesta3mlouhom fel routes.
 
@@ -22,6 +27,17 @@ router.post('/', authMiddleware, createProject);
 
 router.get('/', authMiddleware, getMyProjects);
 // Ki l'utilisateur yab3ath GET /projects, nverifiw token bech mba3ed njibou projets mte3ou.
+
+router.get('/search', authMiddleware, searchProjects);
+// L'utilisateur ynajem ylawej 3al les projets mte3ou.
+
+router.get(
+  '/all',
+  authMiddleware,
+  roleMiddleware('manager'),
+  getAllProjects
+);
+// El manager bark howa ili ynajem ychouf les projets il koll.
 
 router.get('/:id', authMiddleware, getProjectById);
 // Njibou projet mou3ayen bel ID mte3ou.

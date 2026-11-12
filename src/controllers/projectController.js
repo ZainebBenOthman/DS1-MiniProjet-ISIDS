@@ -284,5 +284,99 @@ const deleteProject = async (req, res) => {
   }
 };
 
-module.exports = { createProject, getMyProjects, getProjectById, updateProject, deleteProject };
+const searchProjects = async (req, res) => {
+  // Bech nlawjou 3al projets bel nom wala statut.
+
+  try {
+    // Ne5dhou les criteres de recherche mel URL.
+    const { nom, statut } = req.query;
+
+    // Net2akdou eli les parametres texte s7a7.
+    if (
+      (nom !== undefined && typeof nom !== 'string') ||
+      (statut !== undefined && typeof statut !== 'string')
+    ) {
+      return res.status(400).json({
+        message: 'Parametres de recherche invalides'
+      });
+    }
+
+    // Nverifiw statut ken mawjoud
+    const statutsAutorises = ['todo', 'doing', 'done'];
+
+    if (statut !== undefined &&
+        !statutsAutorises.includes(statut)) {
+      return res.status(400).json({
+        message: 'Statut invalide'
+      });
+    }
+
+    // Nabdew b filtre 3al projets mta3 l'utilisateur,
+    const filtre = {
+      owner: req.user._id
+    };
+
+    // Ken fama nom, nzidouh fel filtre.
+    if (nom && nom.trim()) {
+      // Na7iw les caracteres speciaux mte3 Regex.
+      const nomSecurise = nom.trim()
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      filtre.nom = {
+        $regex: nomSecurise,
+        $options: 'i'
+      };
+    }
+
+    // Ken fama statut, nzidouh fel filtre.
+    if (statut) {
+      filtre.statut = statut;
+    }
+
+    // Nlawjou fel MongoDB bel filtre eli 7adharneh.
+    const projects = await Project.find(filtre)
+      .sort({ createdAt: -1 });
+
+    // Nraj3ou resultats recherche.
+    return res.status(200).json({
+      message: 'Resultats de la recherche',
+      nombre: projects.length,
+      projets: projects
+    });
+
+  } catch (error) {
+    console.error('Erreur recherche projets :', error);
+
+    return res.status(500).json({
+      message: 'Erreur interne du serveur'
+    });
+  }
+};
+
+const getAllProjects = async (req, res) => {
+  // El manager ynajem ychouf les projets il koll.
+
+  try {
+    // Njibou les projets sans filtre owner.
+    const projects = await Project.find()
+      .populate('owner', 'nom login role')
+      .sort({ createdAt: -1 });
+
+    // Nraj3ou liste complete lel manager.
+    return res.status(200).json({
+      message: 'Liste de tous les projets',
+      nombre: projects.length,
+      projets: projects
+    });
+
+  } catch (error) {
+    console.error('Erreur recuperation tous les projets :', error);
+
+    return res.status(500).json({
+      message: 'Erreur interne du serveur'
+    });
+  }
+};
+
+module.exports = { createProject, getMyProjects, getProjectById, updateProject, deleteProject, searchProjects, getAllProjects };
 //Ligne hedhi tkhali  les fonctions disponibles bech nesta3mlouhom fel routes.
