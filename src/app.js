@@ -4,6 +4,7 @@ require('dotenv').config();// Na9raw les variables eli mawjoudin fi .env kima PO
 
 const connectDB = require('./config/db');// Njibou fonction connectDB mel fichier db.js bech torbet serveur mte3na b MongoDB.
 const authRoutes = require('./routes/authRoutes');// Njibou les routes mte3 l'authentification (inscription w ba3d connexion).
+const projectRoutes = require('./routes/projectRoutes');// Njibou routes mte3 projets.
 
 // Naamlou application Express jdida.Wel app heya eli bech tetsarref fel les requetes.
 const app = express();
@@ -18,6 +19,9 @@ app.get('/', (req, res) => {
 
 // Norbtou les routes mte3 authentification bel app (/auth + /register = /auth/register).
 app.use('/auth', authRoutes);
+
+// Norbtou routes projets bel application.
+app.use('/projects', projectRoutes);
 
 // Ne5dhou numero port mel fichier .env ou ken port mch mawjoud, nesta3mlou il port 3000.
 const PORT = process.env.PORT || 3000;
