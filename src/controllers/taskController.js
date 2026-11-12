@@ -126,9 +126,116 @@ const getTaskById = async (req, res) => {
     });
   }
 };
+//mofication mtaa tache
+const updateTask = async (req, res) => {
+  try {
+    // Nverifiw eli ID mtaa tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nverifiw eli user andou el droit ybadel tache
+    const project = await Project.findById(task.project);
+
+    if (!project || (
+      req.user.role !== 'manager' &&
+      String(project.owner) !== String(req.user._id)
+    )) {
+      return res.status(403).json({
+        message: 'Acces interdit'
+      });
+    }
+
+    // Nekhdhou les champs elli utilisateur yheb ybadelhom
+    const { titre, description, statut, deadline } = req.body;
+
+    // Nbadlou ken les champs eli baathhom utilisateur
+    if (titre !== undefined) task.titre = titre;
+    if (description !== undefined) task.description = description;
+    if (statut !== undefined) task.statut = statut;
+    if (deadline !== undefined) task.deadline = deadline;
+
+    // Nsajlou les modifications fel MongoDB
+    await task.save();
+
+    return res.status(200).json({
+      message: 'Tache modifiee avec succes',
+      task
+    });
+
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Donnees invalides',
+        error: error.message
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
+//nfaskhou tache
+const deleteTask = async (req, res) => {
+  try {
+    // Nverifiw eli ID tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nverifiw el projet w les droits mtaa utilisateur
+    const project = await Project.findById(task.project);
+
+    if (!project || (
+      req.user.role !== 'manager' &&
+      String(project.owner) !== String(req.user._id)
+    )) {
+      return res.status(403).json({
+        message: 'Acces interdit'
+      });
+    }
+
+    // Nfasskhou tache mel MongoDB
+    await task.deleteOne();
+
+    return res.status(200).json({
+      message: 'Tache supprimee avec succes'
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
 
 module.exports = {
   createTask,
   getTasks,
-  getTaskById
+  getTaskById,
+  updateTask,
+  deleteTask
 };

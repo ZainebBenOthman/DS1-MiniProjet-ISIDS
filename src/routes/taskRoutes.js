@@ -21,4 +21,9 @@ router.get('/', taskController.getTasks);
 // Route bech naffichiw tache bel ID
 router.get('/:id', taskController.getTaskById);
 
+// Route bech nbadlou tache
+router.put('/:id', taskController.updateTask);
+
+// Route bech nfasskhou tache
+router.delete('/:id', taskController.deleteTask);
 module.exports = router;
