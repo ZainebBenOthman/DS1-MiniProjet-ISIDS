@@ -1,0 +1,18 @@
+info:
+  name: Supprimer projet
+  type: http
+  seq: 9
+
+http:
+  method: DELETE
+  url: http://localhost:3000/projects/6af5b25d938a4fbbc4c657fa
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjRjM2M2OWYxNGU0NjJlNTQ5OTc1NyIsImlhdCI6MTc5NDQ4Njk1NCwiZXhwIjoxNzk0NDkwNTU0fQ.9A6Dw8XP8NTc8XbbJWiC_dloTLgc_xJgCKeryxH6_yM
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

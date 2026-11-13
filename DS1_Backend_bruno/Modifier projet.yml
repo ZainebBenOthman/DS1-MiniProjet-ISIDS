@@ -1,0 +1,29 @@
+info:
+  name: Modifier projet
+  type: http
+  seq: 8
+
+http:
+  method: PUT
+  url: http://localhost:3000/projects/6af59dbe76315a0b372bcff4
+  body:
+    type: json
+    data: |+
+      
+
+
+      {
+        "statut": "annule"
+      }
+
+
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjRjM2M2OWYxNGU0NjJlNTQ5OTc1NyIsImlhdCI6MTc5NDQ4NjIwOCwiZXhwIjoxNzk0NDg5ODA4fQ.fPq2aUUwPYZlyLTrm5g7WTzwLzuY2M0dK5Hg8vNUXUY
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

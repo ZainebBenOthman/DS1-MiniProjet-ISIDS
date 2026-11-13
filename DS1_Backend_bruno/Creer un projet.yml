@@ -1,0 +1,37 @@
+info:
+  name: Creer un projet
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:3000/projects
+  body:
+    type: json
+    data: "
+
+
+      {
+
+      \  \"nom\": \"Projet test suppression\",
+
+      \  \"description\": \"Projet temporaire pour tester DELETE\",
+
+      \  \"statut\": \"todo\"
+
+      }
+
+
+
+
+      \  "
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjRjM2M2OWYxNGU0NjJlNTQ5OTc1NyIsImlhdCI6MTc5NDQ4NjIwOCwiZXhwIjoxNzk0NDg5ODA4fQ.fPq2aUUwPYZlyLTrm5g7WTzwLzuY2M0dK5Hg8vNUXUY
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

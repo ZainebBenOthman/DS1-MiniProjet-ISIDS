@@ -1,0 +1,31 @@
+info:
+  name: creer compt utilisateur
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/auth/register
+  body:
+    type: json
+    data: "
+
+      {
+
+      \  \"nom\": \"Ahmed\",
+
+      \  \"login\": \"ahmed123\",
+
+      \  \"password\": \"Ahmed12345!\"
+
+      }
+
+      \  "
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
