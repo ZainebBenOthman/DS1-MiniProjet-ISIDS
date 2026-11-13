@@ -1,0 +1,27 @@
+info:
+  name: USER dans le projet d'un autre utilisateur
+  type: http
+  seq: 21
+
+http:
+  method: POST
+  url: http://localhost:3000/api/tasks
+  body:
+    type: json
+    data: |
+      {
+        "titre": "Test permission user",
+        "description": "Verifier les droits",
+        "statut": "todo",
+        "project": "6af5d869837c790c2240e67e"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjczMTY1OTllNmE2NTFhZTY3MTMzZCIsImlhdCI6MTc5NDU4OTA1NCwiZXhwIjoxNzk0NTkyNjU0fQ.w1nGKQOjbzfYE-HS8rdS-HMl8OJn00pC-MPnO6Uv4IU
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

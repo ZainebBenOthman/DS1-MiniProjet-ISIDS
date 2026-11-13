@@ -1,0 +1,18 @@
+info:
+  name: Verification acces manager
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:3000/auth/manager
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDU4NDgzNSwiZXhwIjoxNzk0NTg4NDM1fQ.8hLBi0xkxuYSm7kehxOdNS5
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

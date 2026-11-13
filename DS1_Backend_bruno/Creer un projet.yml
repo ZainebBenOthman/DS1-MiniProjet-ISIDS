@@ -1,0 +1,37 @@
+info:
+  name: Creer un projet
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: http://localhost:3000/projects
+  body:
+    type: json
+    data: "
+
+
+      {
+
+      \  \"nom\": \"restaurant\",
+
+      \  \"description\": \"Projet temporaire pour tester DELETE\",
+
+      \  \"statut\": \"done\"
+
+      }
+
+
+
+
+      \  "
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDU4MjM4NiwiZXhwIjoxNzk0NTg1OTg2fQ.rZ4rPWdpJgKgOZudYKbYbv781MW3fl9x75-E3O9Zc14
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

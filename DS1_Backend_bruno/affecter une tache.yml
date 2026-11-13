@@ -1,0 +1,25 @@
+info:
+  name: affecter une tache
+  type: http
+  seq: 17
+
+http:
+  method: PATCH
+  url: http://localhost:3000/api/tasks/6af5f53c965e8b36eab1ec90/assign
+  body:
+    type: json
+    data: |
+      
+      {
+        "assignedTo": "6af5d800837c790c2240e67d"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDUwNjU3NCwiZXhwIjoxNzk0NTEwMTc0fQ.CUoGSB8tGrjCF8U_K9t2gHive_KUJ2q6qVgk1Q7ZEWM
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,26 @@
+info:
+  name: modifier une tache
+  type: http
+  seq: 15
+
+http:
+  method: PUT
+  url: http://localhost:3000/api/tasks/6af5f5af965e8b36eab1ec91
+  body:
+    type: json
+    data: |
+      
+      {
+        "titre": "Developper la page login modifiee",
+        "statut": "doing"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDUwNDI5OCwiZXhwIjoxNzk0NTA3ODk4fQ.ON6xWSyvjAndV2g_KkvTt_1PnHI782qSE2DlC6l3EjQ
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

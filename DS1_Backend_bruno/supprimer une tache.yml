@@ -1,0 +1,18 @@
+info:
+  name: supprimer une tache
+  type: http
+  seq: 16
+
+http:
+  method: DELETE
+  url: http://localhost:3000/api/tasks/6af5f5af965e8b36eab1ec91
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDUwNDQyNywiZXhwIjoxNzk0NTA4MDI3fQ.uzsxr8LKt3c5eGSGkghB2OYYK0Idj7YITCyqJ6x602E
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
