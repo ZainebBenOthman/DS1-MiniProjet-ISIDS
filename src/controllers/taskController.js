@@ -27,7 +27,15 @@ const createTask = async (req, res) => {
         message: 'Projet introuvable'
       });
     }
-
+// El user ynajem yaamel tache ken fi projet mteaou
+if (
+  req.user.role !== 'manager' &&
+  String(existingProject.owner) !== String(req.user._id)
+) {
+  return res.status(403).json({
+    message: 'Acces interdit a ce projet'
+  });
+}
     // Nsajlou tache jdida fel MongoDB
     const task = await Task.create({
       titre,
