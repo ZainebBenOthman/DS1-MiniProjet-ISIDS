@@ -61,15 +61,36 @@ const createProject = async (req, res) => {
 };
 
 const getMyProjects = async (req, res) => {
-  // Bech njibou les projets mte3 l'utilisateur connecté.
+  // Bech njibou les projets mtea l'utilisateur connecté.
 
   try {
-    // Nlawjou fel MongoDB 3al projets mta3 l'utilisateur.
+    // Nekhdhou les parametres mtaa tri mel URL
+    const { sortBy, order } = req.query;
+
+    // Les champs eli najmou nsortiw bihom
+    const allowedSort = ['createdAt', 'nom', 'statut'];
+
+    if (sortBy !== undefined && !allowedSort.includes(sortBy)) {
+      return res.status(400).json({
+        message: 'Champ de tri invalide'
+      });
+    }
+
+    if (order !== undefined && !['asc', 'desc'].includes(order)) {
+      return res.status(400).json({
+        message: 'Ordre de tri invalide'
+      });
+    }
+
+    // Par defaut, tri par date eli jdida 
+    const field = sortBy || 'createdAt';
+    const direction = order === 'asc' ? 1 : -1;
+
+    // Njibou les projets mtaa utilisateur w nsortiw bihom
     const projects = await Project.find({
       owner: req.user._id
-    }).sort({ createdAt: -1 });
+    }).sort({ [field]: direction, _id: 1 });
 
-    // Nraj3ou les projets eli l9inehom.
     return res.status(200).json({
       message: 'Liste de vos projets',
       nombre: projects.length,
@@ -77,7 +98,6 @@ const getMyProjects = async (req, res) => {
     });
 
   } catch (error) {
-    // Ken tsir erreur, naffichiwhha fel terminal.
     console.error('Erreur recuperation projets :', error);
 
     return res.status(500).json({
@@ -85,6 +105,7 @@ const getMyProjects = async (req, res) => {
     });
   }
 };
+
 
 const mongoose = require('mongoose');
 // Njibou Mongoose bech nverifiw format mta3 l'ID.

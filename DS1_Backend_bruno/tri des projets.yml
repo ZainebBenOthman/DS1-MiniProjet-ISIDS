@@ -1,0 +1,25 @@
+info:
+  name: tri des projets
+  type: http
+  seq: 18
+
+http:
+  method: GET
+  url: http://localhost:3000/projects?sortBy=nom&order=desc
+  params:
+    - name: sortBy
+      value: nom
+      type: query
+    - name: order
+      value: desc
+      type: query
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDU4NzEyOSwiZXhwIjoxNzk0NTkwNzI5fQ.L9f091C1St0Y3fw6lv23Tv7YN0vAo0XmqS2WnBl53KQ
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

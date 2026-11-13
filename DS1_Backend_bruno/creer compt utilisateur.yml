@@ -1,3 +1,4 @@
+
 info:
   name: creer compt utilisateur
   type: http
@@ -8,20 +9,13 @@ http:
   url: http://localhost:3000/auth/register
   body:
     type: json
-    data: "
-
+    data: |
       {
-
-      \  \"nom\": \"Ahmed\",
-
-      \  \"login\": \"ahmed123\",
-
-      \  \"password\": \"Ahmed12345!\"
-
+        "nom": "{{nom}}",
+        "login": "{{login}}",
+        "password": "{{password}}"
       }
-
-      \  "
-  auth: inherit
+  auth: none
 
 settings:
   encodeUrl: true
@@ -29,3 +23,4 @@ settings:
   followRedirects: true
   maxRedirects: 5
   forwardAuthorizationHeader: false
+

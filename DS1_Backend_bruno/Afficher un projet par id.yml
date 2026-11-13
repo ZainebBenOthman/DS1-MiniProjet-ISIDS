@@ -5,10 +5,10 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/projects/000000000000000000000000
-  auth:
-    type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVhMDcwMGM5OTUwOTRhNWQ1NjFlNyIsImlhdCI6MTc5NDQ4MjM2NSwiZXhwIjoxNzk0NDg1OTY1fQ.ie_724T9Q8VsVc2XCvLdsHS97FFxZUxAXW9itPf6VtM
+    url: http://localhost:3000/projects/{{project_id}}
+    auth:
+      type: bearer
+      token: "{{jwt_token}}"
 
 settings:
   encodeUrl: true

@@ -1,0 +1,25 @@
+info:
+  name: recherche et tri des tache
+  type: http
+  seq: 19
+
+http:
+  method: GET
+  url: http://localhost:3000/api/tasks?sortBy=titre&order=asc
+  params:
+    - name: sortBy
+      value: titre
+      type: query
+    - name: order
+      value: asc
+      type: query
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjVkYjY4ODM3Yzc5MGMyMjQwZTY3ZiIsImlhdCI6MTc5NDU4NDI4NiwiZXhwIjoxNzk0NTg3ODg2fQ.A5RobncsfiOgHyg9Rr7ZPu862FUj7J2zHUyFTbbBlxs
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

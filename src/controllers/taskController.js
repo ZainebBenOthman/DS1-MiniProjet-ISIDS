@@ -1,0 +1,391 @@
+// Njibou Mongoose bech netaamlou maa MongoDB
+const mongoose = require('mongoose');
+// Njibou modele Task bech nsajlou w njibou les taches
+const Task = require('../models/Task');
+// Njibou modele Project bech nverifiw eli projet mawjoud
+const Project = require('../models/Project');
+
+// Fonction bech naamlou tache jdida
+//createTask	Creation mtaa une tache f MongoDB en verifiant eli projet mawjoud
+const createTask = async (req, res) => {
+  try {
+    // Nekhdhou les donnees mel requete
+    const { titre, description, statut, deadline, project } = req.body;
+
+    // Net2akdou eli ID projet shih
+    if (!mongoose.isValidObjectId(project)) {
+      return res.status(400).json({
+        message: 'ID projet invalide'
+      });
+    }
+
+    // Nverifiw eli lprojet mawjoud fel MongoDB
+    const existingProject = await Project.findById(project);
+
+    if (!existingProject) {
+      return res.status(404).json({
+        message: 'Projet introuvable'
+      });
+    }
+// El user ynajem yaamel tache ken fi projet mteaou
+if (
+  req.user.role !== 'manager' &&
+  String(existingProject.owner) !== String(req.user._id)
+) {
+  return res.status(403).json({
+    message: 'Acces interdit a ce projet'
+  });
+}
+    // Nsajlou tache jdida fel MongoDB
+    const task = await Task.create({
+      titre,
+      description,
+      statut,
+      deadline,
+      project
+    });
+
+    // Narjaou ltache eli taamlet
+    return res.status(201).json({
+      message: 'Tache creee avec succes',
+      task
+    });
+
+  } catch (error) {
+    // Ken tsir erreur fel serveur
+    return res.status(500).json({
+      message: 'Erreur serveur',
+      error: error.message
+    });
+  }
+};
+
+// Fonction bech naffichiw les taches
+//getTasks	naffichiw les taches accessibles lel utilisateur connecté
+const getTasks = async (req, res) => {
+
+
+  try {
+    // Nekhdhou les parametres mel URL
+    const { search, statut, project, sortBy, order } = req.query;
+    const filter = {};
+
+    // El user ychouf ken taches mtaa projets mte3ou
+    // El manager ynajem ychouf les taches lkol
+    if (req.user.role !== 'manager') {
+      const projects = await Project.find({
+        owner: req.user._id
+      }).select('_id');
+
+      filter.project = {
+        $in: projects.map(p => p._id)
+      };
+    }
+
+    // Recherche ala taches ala hasb titre
+    if (search !== undefined) {
+      if (typeof search !== 'string' || search.length > 100) {
+        return res.status(400).json({
+          message: 'Recherche invalide'
+        });
+      }
+
+      // Nlawjou bel titre mnghir manrakzou ala  majuscule wala minuscule
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      filter.titre = {
+        $regex: safeSearch,
+        $options: 'i'
+      };
+    }
+
+    // Filtrage ala hasb el statut
+    if (statut !== undefined) {
+      if (!['todo', 'doing', 'done'].includes(statut)) {
+        return res.status(400).json({
+          message: 'Statut invalide'
+        });
+      }
+
+      filter.statut = statut;
+    }
+
+    // Filtrage ala hasb el  projet
+    if (project !== undefined) {
+      if (!mongoose.isValidObjectId(project)) {
+        return res.status(400).json({
+          message: 'ID projet invalide'
+        });
+      }
+
+      // Net2akdou eli utilisateur andou droit aal projet
+      if (req.user.role !== 'manager') {
+        const allowed = await Project.exists({
+          _id: project,
+          owner: req.user._id
+        });
+
+        if (!allowed) {
+          return res.status(403).json({
+            message: 'Acces interdit a ce projet'
+          });
+        }
+      }
+
+      filter.project = project;
+    }
+
+    // Tri ala hasb titre wala statut wala date wala deadline
+    const allowedSort = ['createdAt', 'titre', 'statut', 'deadline'];
+
+    if (sortBy !== undefined && !allowedSort.includes(sortBy)) {
+      return res.status(400).json({
+        message: 'Champ de tri invalide'
+      });
+    }
+
+    if (order !== undefined && !['asc', 'desc'].includes(order)) {
+      return res.status(400).json({
+        message: 'Ordre de tri invalide'
+      });
+    }
+
+    // Par defaut, les taches ejdod melowl
+    const field = sortBy || 'createdAt';
+    const direction = order === 'asc' ? 1 : -1;
+
+    // Njibou les taches filtrees w triees
+    const tasks = await Task.find(filter)
+      .sort({ [field]: direction, _id: 1 })
+      .populate('project', 'nom')
+      .populate('assignedTo', 'nom login');
+
+    return res.status(200).json(tasks);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur',
+      error: error.message
+    });
+  }
+};
+
+
+// Fonction bech naffichiw tache bel ID
+//getTaskById	nconsultiw une tache moaayna a partir mn son identifiant
+const getTaskById = async (req, res) => {
+  try {
+    // Net2akdou eli ID tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nverifiw el projet w droits mtaa utilisateur
+    const project = await Project.findById(task.project);
+
+    if (!project || (
+      req.user.role !== 'manager' &&
+      String(project.owner) !== String(req.user._id)
+    )) {
+      return res.status(404).json({
+        message: 'Tache introuvable ou inaccessible'
+      });
+    }
+
+    return res.status(200).json(task);
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur',
+      error: error.message
+    });
+  }
+};
+//mofication mtaa tache
+const updateTask = async (req, res) => {
+  try {
+    // Nverifiw eli ID mtaa tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nverifiw eli user andou el droit ybadel tache
+    const project = await Project.findById(task.project);
+
+    if (!project || (
+      req.user.role !== 'manager' &&
+      String(project.owner) !== String(req.user._id)
+    )) {
+      return res.status(403).json({
+        message: 'Acces interdit'
+      });
+    }
+
+    // Nekhdhou les champs elli utilisateur yheb ybadelhom
+    const { titre, description, statut, deadline } = req.body;
+
+    // Nbadlou ken les champs eli baathhom utilisateur
+    if (titre !== undefined) task.titre = titre;
+    if (description !== undefined) task.description = description;
+    if (statut !== undefined) task.statut = statut;
+    if (deadline !== undefined) task.deadline = deadline;
+
+    // Nsajlou les modifications fel MongoDB
+    await task.save();
+
+    return res.status(200).json({
+      message: 'Tache modifiee avec succes',
+      task
+    });
+
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Donnees invalides',
+        error: error.message
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
+//nfaskhou tache
+const deleteTask = async (req, res) => {
+  try {
+    // Nverifiw eli ID tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nverifiw el projet w les droits mtaa utilisateur
+    const project = await Project.findById(task.project);
+
+    if (!project || (
+      req.user.role !== 'manager' &&
+      String(project.owner) !== String(req.user._id)
+    )) {
+      return res.status(403).json({
+        message: 'Acces interdit'
+      });
+    }
+
+    // Nfasskhou tache mel MongoDB
+    await task.deleteOne();
+
+    return res.status(200).json({
+      message: 'Tache supprimee avec succes'
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
+
+const User = require('../models/User');
+
+// Fonction bech el manager yaffecti tache l utilisateur
+const assignTask = async (req, res) => {
+  try {
+    // Nverifiw eli utilisateur manager
+    if (req.user.role !== 'manager') {
+      return res.status(403).json({
+        message: 'Seul le manager peut affecter une tache'
+      });
+    }
+
+    // Net2akdou eli ID tache shih
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({
+        message: 'ID tache invalide'
+      });
+    }
+
+    // Nekhdhou ID utilisateur mel body
+    const { assignedTo } = req.body;
+
+    // Net2akdou eli ID utilisateur s7i7
+    if (!mongoose.isValidObjectId(assignedTo)) {
+      return res.status(400).json({
+        message: 'ID utilisateur invalide'
+      });
+    }
+
+    // Nlawjou al tache fel MongoDB
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        message: 'Tache introuvable'
+      });
+    }
+
+    // Nlawjou al utilisateur eli bech naffectiwlou tache
+    const user = await User.findById(assignedTo);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'Utilisateur introuvable'
+      });
+    }
+
+    // Nsajlou utilisateur eli affecteh el manager
+    task.assignedTo = user._id;
+    await task.save();
+
+    return res.status(200).json({
+      message: 'Tache affectee avec succes',
+      task
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Erreur serveur'
+    });
+  }
+};
+
+module.exports = {
+  createTask,
+  getTasks,
+  getTaskById,
+  updateTask,
+  deleteTask,
+  assignTask
+};

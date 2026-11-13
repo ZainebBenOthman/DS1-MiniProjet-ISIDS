@@ -8,7 +8,7 @@ http:
   url: http://localhost:3000/auth/me
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjRjM2M2OWYxNGU0NjJlNTQ5OTc1NyIsImlhdCI6MTc5NDQ3OTAwMCwiZXhwIjoxNzk0NDgyNjAwfQ.FXwN-VqsMw1d8710YW5v3jk9HxI_WG1v8rpSIA9aB2k
+    token: "{{jwt_token}}"
 
 settings:
   encodeUrl: true

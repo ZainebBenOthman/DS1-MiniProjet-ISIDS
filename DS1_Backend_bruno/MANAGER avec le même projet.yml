@@ -1,0 +1,16 @@
+info:
+  name: MANAGER avec le même projet
+  type: http
+  seq: 22
+
+http:
+  method: POST
+  url: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

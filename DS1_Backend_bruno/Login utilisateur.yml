@@ -12,9 +12,8 @@ http:
 
       {
 
-      \  \"login\": \"ahmed123\",
-
-      \  \"password\": \"Ahmed12345!\"
+          \"login\": \"{{login}}\",
+          \"password\": \"{{password}}\"
 
       }
 
