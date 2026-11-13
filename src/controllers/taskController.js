@@ -55,10 +55,14 @@ const createTask = async (req, res) => {
 // Fonction bech naffichiw les taches
 //getTasks	naffichiw les taches accessibles lel utilisateur connecté
 const getTasks = async (req, res) => {
-  try {
-    let filter = {};
 
-    // El user ychouf taches mtaa projets mteaou
+
+  try {
+    // Nekhdhou les parametres mel URL
+    const { search, statut, project, sortBy, order } = req.query;
+    const filter = {};
+
+    // El user ychouf ken taches mtaa projets mte3ou
     // El manager ynajem ychouf les taches lkol
     if (req.user.role !== 'manager') {
       const projects = await Project.find({
@@ -70,8 +74,81 @@ const getTasks = async (req, res) => {
       };
     }
 
-    // Njibou les taches mel MongoDB
+    // Recherche ala taches ala hasb titre
+    if (search !== undefined) {
+      if (typeof search !== 'string' || search.length > 100) {
+        return res.status(400).json({
+          message: 'Recherche invalide'
+        });
+      }
+
+      // Nlawjou bel titre mnghir manrakzou ala  majuscule wala minuscule
+      const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      filter.titre = {
+        $regex: safeSearch,
+        $options: 'i'
+      };
+    }
+
+    // Filtrage ala hasb el statut
+    if (statut !== undefined) {
+      if (!['todo', 'doing', 'done'].includes(statut)) {
+        return res.status(400).json({
+          message: 'Statut invalide'
+        });
+      }
+
+      filter.statut = statut;
+    }
+
+    // Filtrage ala hasb el  projet
+    if (project !== undefined) {
+      if (!mongoose.isValidObjectId(project)) {
+        return res.status(400).json({
+          message: 'ID projet invalide'
+        });
+      }
+
+      // Net2akdou eli utilisateur andou droit aal projet
+      if (req.user.role !== 'manager') {
+        const allowed = await Project.exists({
+          _id: project,
+          owner: req.user._id
+        });
+
+        if (!allowed) {
+          return res.status(403).json({
+            message: 'Acces interdit a ce projet'
+          });
+        }
+      }
+
+      filter.project = project;
+    }
+
+    // Tri ala hasb titre wala statut wala date wala deadline
+    const allowedSort = ['createdAt', 'titre', 'statut', 'deadline'];
+
+    if (sortBy !== undefined && !allowedSort.includes(sortBy)) {
+      return res.status(400).json({
+        message: 'Champ de tri invalide'
+      });
+    }
+
+    if (order !== undefined && !['asc', 'desc'].includes(order)) {
+      return res.status(400).json({
+        message: 'Ordre de tri invalide'
+      });
+    }
+
+    // Par defaut, les taches ejdod melowl
+    const field = sortBy || 'createdAt';
+    const direction = order === 'asc' ? 1 : -1;
+
+    // Njibou les taches filtrees w triees
     const tasks = await Task.find(filter)
+      .sort({ [field]: direction, _id: 1 })
       .populate('project', 'nom')
       .populate('assignedTo', 'nom login');
 
@@ -84,6 +161,7 @@ const getTasks = async (req, res) => {
     });
   }
 };
+
 
 // Fonction bech naffichiw tache bel ID
 //getTaskById	nconsultiw une tache moaayna a partir mn son identifiant
