@@ -12,9 +12,8 @@ http:
 
       {
 
-      \  \"login\": \"dorra123\",
-
-      \  \"password\": \"dorra12345!\"
+          \"login\": \"{{login}}\",
+          \"password\": \"{{password}}\"
 
       }
 

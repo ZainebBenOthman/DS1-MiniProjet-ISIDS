@@ -6,12 +6,9 @@ info:
 http:
   method: GET
   url: http://localhost:3000/auth/me
-  body:
-    type: json
-    data: ""
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjczMTY1OTllNmE2NTFhZTY3MTMzZCIsImlhdCI6MTc5NDU4NDk1NSwiZXhwIjoxNzk0NTg4NTU1fQ.FDsy8hK9Sw3btm8P4-Oldt3kyhq7jVJyR__GT_T8khQ
+    token: "{{jwt_token}}"
 
 settings:
   encodeUrl: true

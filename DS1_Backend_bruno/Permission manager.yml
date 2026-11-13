@@ -8,7 +8,7 @@ http:
   url: http://localhost:3000/projects/all
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhZjczMTY1OTllNmE2NTFhZTY3MTMzZCIsImlhdCI6MTc5NDU4Nzc2OSwiZXhwIjoxNzk0NTkxMzY5fQ.OlAcGEG4IPSl2f8O-KVPFbNn-IyKif38Dw6WFzdZOhA
+    token: "{{jwt_token}}"
 
 settings:
   encodeUrl: true
